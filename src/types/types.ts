@@ -1,5 +1,5 @@
 
-export interface IFilm {
+export interface IMovie {
     poster_path: string;
     adult: boolean;
     overview: string;
@@ -17,8 +17,13 @@ export interface IFilm {
 }
 
 export interface IMovieList {
-    page: number;
-    results: IFilm[];
-    total_results: number;
-    total_pages: number;
+    page?: number;
+    results?: IMovie[];
+    total_results?: number;
+    total_pages?: number;
+}
+
+export interface Genre {
+    id: number;
+    name: string;
 }
