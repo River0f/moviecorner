@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchMovieGenres } from "../async/fetchGenres";
 import { useTypedDispatch, useTypedSelector } from "../hooks/useTypeSelctor";
-import { IMovieList } from "../types/types";
+import { Genre, IMovieList } from "../types/types";
 import { ListItem } from "./listItem";
 import { SortForm } from "./sortForm";
 import { List } from "./ui/List";
@@ -25,30 +25,33 @@ export const MovieList:FC = () => {
 
     const dispatch = useTypedDispatch();
     const genres = useTypedSelector(state => state.genres.movieGenresList);
-    const [movieList, setMovieList] = useState<IMovieList>({});
+    const [movie, setMovie] = useState<IMovieList>({});
+
     const [sort, setSort] = useState<sortParams>(sortParams.popularityDesc);
+    const [withGenres, setWithGenres] = useState("");
+    const [withoutGenres, setWithoutGenres] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
-            axios.get<IMovieList>(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=${sort}`)
+            axios.get<IMovieList>(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=${sort}&with-genres=${withGenres}&without_genres=${withoutGenres}`)
                 .then((responce) => {
-                    setMovieList(responce.data);
+                    setMovie(responce.data);
                 })
         }
         fetchData();
-    }, [sort, setSort]);
+    }, [sort, setSort, withGenres, setWithGenres, withoutGenres, setWithoutGenres]);
 
     useEffect(() => {
         dispatch(fetchMovieGenres());
     }, [dispatch]);
 
-    const movieElementsList = movieList.results ? movieList.results.map((element) => {
+    const movieElementsList = movie.results ? movie.results.map((element) => {
         return <ListItem key={element.id} movieData={element} />
     }) : [];
 
     return (
         <StyledContainer>
-            <SortForm sort={sort} sortCallback={setSort} genresList={genres}/>
+            <SortForm sort={sort} sortCallback={setSort} genres={genres} setWithGenres={setWithGenres} setWithoutGenres={setWithoutGenres}/>
             <List maxColumnCount={5} minElementWidth={"240px"}>
                 {movieElementsList}
             </List>

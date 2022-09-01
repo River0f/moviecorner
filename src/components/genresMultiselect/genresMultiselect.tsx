@@ -1,17 +1,15 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import { Genre } from "../../types/types";
 import { MultiselectItem } from "./MultiselectItem";
 
 interface GenresMultiselectProps {
-    genresList: Genre[];
+    genres: Genre[];
+    activeGenres: Genre[];
+    setActiveGenres: React.Dispatch<React.SetStateAction<Genre[]>>;
 }
 
-export const GenresMultiselect:FC<GenresMultiselectProps> = ({genresList}) => {
-
-    const [activeGenres, setActiveGenres] = useState<Genre[]>([]);
-
-    console.log(activeGenres);
+export const GenresMultiselect:FC<GenresMultiselectProps> = ({genres, activeGenres, setActiveGenres}) => {
 
     const addActiveItem = (item: Genre) => {
         if(!activeGenres.some((genre) => item.id === genre.id)) {
@@ -26,7 +24,7 @@ export const GenresMultiselect:FC<GenresMultiselectProps> = ({genresList}) => {
         return activeGenres.some((item: Genre) => item.id === id);
     }
 
-    const genresElementList = genresList.map((elm) => <MultiselectItem key={elm.id} genre={elm} addActiveItem={addActiveItem} active={isActive(elm.id)}/>);
+    const genresElementList = genres.map((elm) => <MultiselectItem key={elm.id} genre={elm} addActiveItem={addActiveItem} active={isActive(elm.id)}/>);
 
     return (
      <StyledMultiselect>
