@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 interface VoteRateProps {
     rateCount: number;
+    size: number;
+    textSize: number;
 }
 
 enum VoteRateColors {
@@ -12,7 +14,7 @@ enum VoteRateColors {
 
 }
 
-export const VoteRate:FC<VoteRateProps> = ({rateCount}) => {
+export const VoteRate:FC<VoteRateProps> = ({rateCount, size, textSize}) => {
 
     const fRateCount = rateCount * 10;
     let strokeColor:VoteRateColors = VoteRateColors.good;
@@ -22,70 +24,71 @@ export const VoteRate:FC<VoteRateProps> = ({rateCount}) => {
     if(fRateCount < 40) {
         strokeColor = VoteRateColors.bad;
     }
-    const radius = 20;
+    const radius = size;
     const circumference = radius * 2 * Math.PI;
     const offcet = circumference - fRateCount / 100 * circumference;
+    const barSize = radius * 2 + 10
 
-    return (    
-        <StyledContainer>
-            <StyledBar>
-                <StyledBarCircle>
-                    <StyledCircle
-                        stroke={'#666'} 
-                        cx={radius} 
-                        cy={radius} 
-                        r={radius}
-                        >
-                    </StyledCircle>
-                    <StyledCircle
-                        cx={radius} 
-                        cy={radius} 
-                        r={radius} 
-                        stroke={strokeColor}
-                        strokeDashoffset={offcet} 
-                        strokeDasharray={`${circumference}, ${circumference}`}
-                        >
-                    </StyledCircle>
-                </StyledBarCircle>
-                <StyledBarText>{fRateCount ? `${fRateCount}%` : "NR"}</StyledBarText>
-            </StyledBar>
-        </StyledContainer>
+    return (
+        <StyledBar size={barSize}>
+            <StyledBarCircle size={barSize}>
+                <StyledCircle
+                    stroke={'#666'} 
+                    cx={radius} 
+                    cy={radius} 
+                    r={radius}
+                    >
+                </StyledCircle>
+                <StyledCircle
+                    cx={radius} 
+                    cy={radius} 
+                    r={radius} 
+                    stroke={strokeColor}
+                    strokeDashoffset={offcet} 
+                    strokeDasharray={`${circumference}, ${circumference}`}
+                    >
+                </StyledCircle>
+            </StyledBarCircle>
+            <StyledBarText size={textSize}><span>{fRateCount ? `${fRateCount}%` : "NR"}</span></StyledBarText>
+        </StyledBar>
     );
 }
 
-const StyledContainer = styled.div`
-position: absolute;
-top: -25px;
-right: 15px;
+interface StyledCircleProps {
+    size: number;
+}
+
+const StyledBar = styled.div<StyledCircleProps>`
+    position: relative;
+    height: ${props => props.size}px;
 `
-const StyledBar = styled.div`
-position: relative;
-`
-const StyledBarCircle = styled.svg`
-width: 50px;
-height: 50px;
-background-color: #333;
-border-radius: 50%;
-transform: rotate(-90deg);
+
+const StyledBarCircle = styled.svg<StyledCircleProps>`
+    width: ${props => props.size}px;
+    height: ${props => props.size}px;
+    background-color: #333;
+    border-radius: 50%;
+    transform: rotate(-90deg);
 `
 const StyledCircle = styled.circle`
-width: 100%;
-height: 100%;
-fill: none;
-stroke-width: 3px;
-stroke-linecap: round;
-transform: translate(5px, 5px);
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    transform: translate(5px, 5px);
 `
-const StyledBarText = styled.div`
-position: absolute;
-top: 15px;
-left: 0;
-right: 0;
-bottom: 0;
-z-index: 1;
-color: #ccc;
-display: flex;
-justify-content: center;
-font-size: 0.8em;
-font-family: sans-serif;
+const StyledBarText = styled.div<StyledCircleProps>`
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    color: #ccc;
+    font-size: ${props => props.size}px;;
+    font-family: sans-serif;
 `

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import genreReducer  from "./reducers/genreReducer";
+import apiConfigReducer from "./reducers/configReducer";
 
 export const store = configureStore({
     reducer: {
-        genres: genreReducer
+        genres: genreReducer,
+        config: apiConfigReducer
     }
   })
 

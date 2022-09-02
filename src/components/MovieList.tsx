@@ -1,14 +1,12 @@
-import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchMovieGenres } from "../async/fetchGenres";
+import { fetchMovieGenres } from "../api/asyncActions/fetchGenres";
+import { fetchMovies } from "../api/fetchMovies";
 import { useTypedDispatch, useTypedSelector } from "../hooks/useTypeSelctor";
-import { Genre, IMovieList } from "../types/types";
+import { IMovieList } from "../types/types";
 import { ListItem } from "./listItem";
 import { SortForm } from "./sortForm";
 import { List } from "./ui/List";
-
-const API_KEY = "09671f893e89a3d219d0bad73ba9e631";
 
 export enum sortParams {
     popularityAsc = "popularity.asc",
@@ -32,13 +30,7 @@ export const MovieList:FC = () => {
     const [withoutGenres, setWithoutGenres] = useState("");
 
     useEffect(() => {
-        const fetchData = async () => {
-            axios.get<IMovieList>(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=${sort}&with-genres=${withGenres}&without_genres=${withoutGenres}`)
-                .then((responce) => {
-                    setMovie(responce.data);
-                })
-        }
-        fetchData();
+        fetchMovies(sort,withGenres, withoutGenres).then((movies) => setMovie(movies))
     }, [sort, setSort, withGenres, setWithGenres, withoutGenres, setWithoutGenres]);
 
     useEffect(() => {

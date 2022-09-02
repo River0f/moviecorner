@@ -1,7 +1,9 @@
 import { FC } from "react";
 import styled from "styled-components";
+import { useTypedSelector } from "../hooks/useTypeSelctor";
 import { IMovie } from "../types/types";
 import { VoteRate } from "./ui/voteRate";
+import defaultPoster from "../assets/img/defaultMovie.png";
 
 interface ListItemProps {
     movieData: IMovie;
@@ -10,19 +12,23 @@ interface ListItemProps {
 export const ListItem:FC<ListItemProps> = ({movieData}) => {
 
     const date = new Date(movieData.release_date);
-
     const formatDate = date.toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric" });
+
+    const {base_url, poster_sizes} = useTypedSelector(state => state.config.apiConfig.images);
+
+    const posterurl = movieData.poster_path ? `${base_url}/${poster_sizes[3]}/${movieData.poster_path}`: defaultPoster;
 
     return (
         <StyledCntainer>
             <StyledPoster
-                src={`https://image.tmdb.org/t/p/w500/${movieData.poster_path}`} 
-                alt={movieData.original_title} title={movieData.original_title}
+                src={posterurl} title={movieData.original_title}
             ></StyledPoster>
             <StyledInfo>
                 <StyledTitle>{movieData.original_title}</StyledTitle>
                 <StyledDate>{formatDate}</StyledDate>
-                <VoteRate rateCount={movieData.vote_average}/>
+                <StyledVoteContainer>
+                    <VoteRate size={25} textSize={16} rateCount={movieData.vote_average}/>
+                </StyledVoteContainer>
             </StyledInfo>
         </StyledCntainer>
     );
@@ -57,4 +63,9 @@ const StyledDate = styled.span`
 font-size: 1em;
 font-family: sans-serif;
 color: #777;
+`
+const StyledVoteContainer = styled.div`
+position: absolute;
+top: -25px;
+right: 15px;
 `
